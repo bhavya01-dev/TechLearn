@@ -1,54 +1,219 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, CheckCircle } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { ArrowLeft, Clock, BookOpen, CheckCircle, Award, Play, ChevronRight, User } from 'lucide-react';
 
 const CourseDetail = () => {
   const { id } = useParams();
+  const [activeTab, setActiveTab] = useState('Overview');
 
-  // In a real app, fetch course details by ID
+  // Mock course data - in a real app, this would be fetched based on the ID
+  const course = {
+    title: id === 'python' ? 'Python Programming' : id === 'java' ? 'Core Java' : 'Programming Course',
+    level: 'Intermediate',
+    description: 'Master the fundamentals of modern programming with our comprehensive, hands-on course designed for career-focused learning.',
+    duration: '6 weeks',
+    lessons: '11 lessons',
+    access: 'Lifetime access',
+    learningPoints: [
+      "Master Python fundamentals",
+      "Build practical projects",
+      "Understand core programming concepts",
+      "Apply knowledge in real-world scenarios",
+      "Gain confidence in programming",
+      "Prepare for advanced topics"
+    ],
+    prerequisites: [
+      "Basic computer skills",
+      "Text editor knowledge",
+      "Understanding of basic programming concepts"
+    ]
+  };
+
+  const tabs = ['Overview', 'Curriculum', 'Instructor'];
+
   return (
-    <div className="pt-24 pb-20 min-h-screen">
-      <div className="max-w-4xl mx-auto px-6">
-        <Link to="/courses" className="inline-flex items-center text-slate-500 hover:text-[#1E3A8A] mb-8 transition-colors">
-          <ArrowLeft size={20} className="mr-2" /> Back to Courses
-        </Link>
-        
-        <div className="bg-white rounded-2xl shadow-lg border border-slate-100 overflow-hidden">
-          <div className="h-64 bg-slate-200 w-full relative">
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent flex items-end p-8">
-               <h1 className="text-4xl font-bold text-white">Python Programming</h1>
-            </div>
-          </div>
-          
-          <div className="p-8">
-            <div className="flex gap-4 mb-8">
-              <span className="bg-blue-100 text-[#1E3A8A] px-3 py-1 rounded-full text-sm font-semibold">Development</span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-semibold">Beginner</span>
-            </div>
-
-            <h2 className="text-2xl font-bold text-[#1E3A8A] mb-4">What you'll learn</h2>
-            <div className="grid md:grid-cols-2 gap-4 mb-8">
-              {[
-                "Master Python syntax and concepts",
-                "Build real-world applications",
-                "Understand Object Oriented Programming",
-                "Work with modules and packages"
-              ].map((item, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <CheckCircle className="text-green-500 shrink-0 mt-1" size={18} />
-                  <span className="text-slate-600">{item}</span>
-                </div>
-              ))}
-            </div>
-
-            <Link to={`/courses/${id || 'python'}/learn`}>
-                <button className="w-full bg-[#1E3A8A] text-white font-bold py-4 rounded-xl shadow-lg hover:bg-[#1e3a8a]/90 transition-colors">
-                Start Learning
-                </button>
-            </Link>
-          </div>
+    <div className="min-h-screen bg-white font-sans">
+      {/* Minimal Navbar / Back Link */}
+      <div className="bg-[#CCEEFF] pt-24 pb-4">
+        <div className="max-w-7xl mx-auto px-6">
+          <Link to="/learn/courses" className="inline-flex items-center text-[#1E3A8A] hover:text-[#2563EB] transition-colors font-medium gap-2">
+            <ArrowLeft size={18} />
+            Back to Courses
+          </Link>
         </div>
       </div>
+
+      {/* Hero Section */}
+      <section className="bg-[#CCEEFF] pb-20">
+        <div className="max-w-7xl mx-auto px-6">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            <span className="inline-block bg-[#FEF3C7] text-[#92400E] px-3 py-1 rounded-lg text-sm font-bold mb-8">
+              {course.level}
+            </span>
+
+            <h1 className="text-7xl md:text-8xl font-bold text-[#1E3A8A] mb-8 tracking-tighter">
+              {course.title.split(" ")[0]}
+            </h1>
+
+            <p className="text-xl text-slate-600 max-w-2xl mb-10 leading-relaxed">
+              {course.description}
+            </p>
+
+            <div className="flex flex-wrap gap-8 items-center mb-12">
+              <div className="flex items-center gap-2 text-slate-600 font-medium">
+                <Clock size={20} className="text-[#1E3A8A]" />
+                {course.duration}
+              </div>
+              <div className="flex items-center gap-2 text-slate-600 font-medium">
+                <BookOpen size={20} className="text-[#1E3A8A]" />
+                {course.lessons}
+              </div>
+              <div className="flex items-center gap-2 text-slate-600 font-medium">
+                <CheckCircle size={20} className="text-green-500" />
+                {course.access}
+              </div>
+            </div>
+
+            <Link to={`/learn/courses/${id}/learn`}>
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                className="bg-[#059669] text-white px-8 py-4 rounded-xl font-bold flex items-center gap-3 shadow-lg hover:bg-[#047857] transition-all"
+              >
+                <Play size={20} fill="currentColor" />
+                Start Learning
+                <ChevronRight size={20} />
+              </motion.button>
+            </Link>
+          </motion.div>
+        </div>
+      </section>
+
+      {/* Sticky Tabs Navigation */}
+      <nav className="border-b border-blue-100 bg-[#CCEEFF] sticky top-20 z-40 transition-all duration-300">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex gap-12">
+            {tabs.map((tab) => (
+              <button
+                key={tab}
+                onClick={() => setActiveTab(tab)}
+                className={`py-4 text-lg font-bold transition-all relative ${activeTab === tab ? 'text-[#2563EB]' : 'text-slate-500 hover:text-[#1E3A8A]'}`}
+              >
+                {tab}
+                {activeTab === tab && (
+                  <motion.div
+                    layoutId="activeTab"
+                    className="absolute bottom-0 left-0 right-0 h-1 bg-[#2563EB] rounded-full"
+                  />
+                )}
+              </button>
+            ))}
+          </div>
+        </div>
+      </nav>
+
+      {/* Tab Content */}
+      <main className="py-20 bg-[#CCEEFF] min-h-[50vh]">
+        <div className="max-w-7xl mx-auto px-6">
+          <AnimatePresence mode="wait">
+            {activeTab === 'Overview' && (
+              <motion.div
+                key="overview"
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.4 }}
+                className="grid lg:grid-cols-2 gap-20"
+              >
+                {/* What you'll learn */}
+                <div>
+                  <h2 className="text-3xl font-bold text-[#2563EB] mb-10">What you'll learn</h2>
+                  <div className="grid gap-6">
+                    {course.learningPoints.map((point, i) => (
+                      <div key={i} className="flex items-start gap-4 group">
+                        <div className="mt-1 w-6 h-6 rounded-full bg-green-50 text-green-500 flex items-center justify-center shrink-0 border border-green-100 group-hover:bg-green-100 transition-colors">
+                          <CheckCircle size={14} />
+                        </div>
+                        <span className="text-lg text-slate-700 font-medium">{point}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Prerequisites */}
+                <div>
+                  <h2 className="text-3xl font-bold text-[#2563EB] mb-10">Prerequisites</h2>
+                  <div className="grid gap-6">
+                    {course.prerequisites.map((item, i) => (
+                      <div key={i} className="flex items-center gap-4 group">
+                        <div className="w-2.5 h-2.5 rounded-full bg-[#2563EB] group-hover:scale-125 transition-transform" />
+                        <span className="text-lg text-slate-700 font-medium">{item}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'Curriculum' && (
+              <motion.div
+                key="curriculum"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -20 }}
+                className="max-w-3xl"
+              >
+                <h2 className="text-3xl font-bold text-[#1E3A8A] mb-8">Course Curriculum</h2>
+                <div className="space-y-4">
+                  {[1, 2, 3, 4].map((step) => (
+                    <div key={step} className="bg-white/50 backdrop-blur-sm border border-blue-100 p-6 rounded-2xl flex items-center justify-between hover:bg-white transition-all cursor-pointer group">
+                      <div className="flex items-center gap-6">
+                        <div className="w-12 h-12 rounded-xl bg-[#1E3A8A] text-white flex items-center justify-center font-bold">
+                          0{step}
+                        </div>
+                        <div>
+                          <h4 className="font-bold text-[#0F172A] text-lg">Module {step}: Core Concepts</h4>
+                          <p className="text-slate-500 text-sm">3 lessons • 45 mins</p>
+                        </div>
+                      </div>
+                      <ChevronRight className="text-slate-400 group-hover:text-[#2563EB] transition-colors" />
+                    </div>
+                  ))}
+                </div>
+              </motion.div>
+            )}
+
+            {activeTab === 'Instructor' && (
+              <motion.div
+                key="instructor"
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 1.05 }}
+                className="max-w-3xl bg-white/50 backdrop-blur-sm border border-blue-100 p-12 rounded-3xl flex flex-col md:flex-row gap-10 items-center"
+              >
+                <div className="w-40 h-40 bg-[#1E3A8A] rounded-3xl flex items-center justify-center text-white shrink-0 shadow-xl">
+                  <User size={80} />
+                </div>
+                <div>
+                  <div className="flex items-center gap-3 mb-2">
+                    <h3 className="text-3xl font-bold text-[#1E3A8A]">Prashanti Vasi</h3>
+                    <Award size={24} className="text-yellow-500" />
+                  </div>
+                  <p className="text-[#2563EB] font-bold text-lg mb-6 tracking-wide uppercase">Senior Developer & Educator</p>
+                  <p className="text-slate-600 text-lg leading-relaxed">
+                    Expert in software architecture and modern development practices. Dedicated to helping students bridge the gap between theory and real-world application.
+                  </p>
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </main>
     </div>
   );
 };

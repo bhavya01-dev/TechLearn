@@ -1,23 +1,27 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, Calendar, CheckCircle } from 'lucide-react';
 import { FaPython, FaJava, FaReact } from 'react-icons/fa';
 import { SiC, SiJavascript } from 'react-icons/si';
 
 const categories = [
   {
+    id: 'c-programming',
     title: 'C Programming',
     icon: SiC,
     color: '#3949AB',
     bgColor: '#E0E7FF'
   },
   {
+    id: 'python',
     title: 'Python',
     icon: FaPython,
     color: '#3776AB',
     bgColor: '#E0F2FE'
   },
   {
+    id: 'java',
     title: 'Core Java',
     icon: FaJava,
     color: '#E44D26',
@@ -76,18 +80,20 @@ const detailedCourses = [
   }
 ];
 
-const CategoryCard = ({ title, icon: Icon, color, bgColor }) => (
-  <motion.div
-    className="rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 bg-white"
-    whileHover={{ y: -5 }}
-  >
-    <div className="h-48 flex items-center justify-center" style={{ backgroundColor: bgColor }}>
-      <Icon size={80} color={color} className="drop-shadow-sm" />
-    </div>
-    <div className="p-6 bg-white text-center border-t border-slate-100">
-      <h3 className="text-xl font-bold text-[#1E3A8A]">{title}</h3>
-    </div>
-  </motion.div>
+const CategoryCard = ({ id, title, icon: Icon, color, bgColor }) => (
+  <Link to={`/learn/courses/${id}`}>
+    <motion.div
+      className="rounded-2xl overflow-hidden cursor-pointer shadow-sm hover:shadow-xl transition-all duration-300 bg-white"
+      whileHover={{ y: -5 }}
+    >
+      <div className="h-48 flex items-center justify-center" style={{ backgroundColor: bgColor }}>
+        <Icon size={80} color={color} className="drop-shadow-sm" />
+      </div>
+      <div className="p-6 bg-white text-center border-t border-slate-100">
+        <h3 className="text-xl font-bold text-[#1E3A8A]">{title}</h3>
+      </div>
+    </motion.div>
+  </Link>
 );
 
 const DetailedCourseCard = ({ course }) => (
