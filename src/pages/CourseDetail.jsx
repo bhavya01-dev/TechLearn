@@ -1,34 +1,47 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Clock, BookOpen, CheckCircle, Award, Play, ChevronRight, User } from 'lucide-react';
+import { api } from '../services/api';
 
 const CourseDetail = () => {
   const { id } = useParams();
   const [activeTab, setActiveTab] = useState('Overview');
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  // Mock course data - in a real app, this would be fetched based on the ID
-  const course = {
-    title: id === 'python' ? 'Python Programming' : id === 'java' ? 'Core Java' : 'Programming Course',
-    level: 'Intermediate',
-    description: 'Master the fundamentals of modern programming with our comprehensive, hands-on course designed for career-focused learning.',
-    duration: '6 weeks',
-    lessons: '11 lessons',
-    access: 'Lifetime access',
-    learningPoints: [
-      "Master Python fundamentals",
-      "Build practical projects",
-      "Understand core programming concepts",
-      "Apply knowledge in real-world scenarios",
-      "Gain confidence in programming",
-      "Prepare for advanced topics"
-    ],
-    prerequisites: [
-      "Basic computer skills",
-      "Text editor knowledge",
-      "Understanding of basic programming concepts"
-    ]
-  };
+  useEffect(() => {
+    const fetchCourse = async () => {
+      try {
+        const res = await api.get(`/courses/${id}`);
+        if (res.success) {
+          setCourse(res.data);
+        }
+      } catch (err) {
+        console.error('Failed to fetch course', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchCourse();
+  }, [id]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#CCEEFF] flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1E3A8A]"></div>
+      </div>
+    );
+  }
+
+  if (!course) {
+    return (
+      <div className="min-h-screen bg-[#CCEEFF] flex flex-col items-center justify-center">
+        <h2 className="text-2xl font-bold text-[#1E3A8A] mb-4">Course not found</h2>
+        <Link to="/learn/courses" className="text-[#2563EB] hover:underline">Back to Courses</Link>
+      </div>
+    );
+  }
 
   const tabs = ['Overview', 'Curriculum', 'Instructor'];
 
@@ -67,15 +80,15 @@ const CourseDetail = () => {
             <div className="flex flex-wrap gap-8 items-center mb-12">
               <div className="flex items-center gap-2 text-slate-600 font-medium">
                 <Clock size={20} className="text-[#1E3A8A]" />
-                {course.duration}
+                {course.duration || '6 weeks'}
               </div>
               <div className="flex items-center gap-2 text-slate-600 font-medium">
                 <BookOpen size={20} className="text-[#1E3A8A]" />
-                {course.lessons}
+                {course.topics?.length || 0} topics
               </div>
               <div className="flex items-center gap-2 text-slate-600 font-medium">
                 <CheckCircle size={20} className="text-green-500" />
-                {course.access}
+                Lifetime access
               </div>
             </div>
 
@@ -134,7 +147,12 @@ const CourseDetail = () => {
                 <div>
                   <h2 className="text-3xl font-bold text-[#2563EB] mb-10">What you'll learn</h2>
                   <div className="grid gap-6">
-                    {course.learningPoints.map((point, i) => (
+                    {(course.learningPoints || [
+                      "Master fundamentals",
+                      "Build practical projects",
+                      "Understand core concepts",
+                      "Apply knowledge in real-world scenarios"
+                    ]).map((point, i) => (
                       <div key={i} className="flex items-start gap-4 group">
                         <div className="mt-1 w-6 h-6 rounded-full bg-green-50 text-green-500 flex items-center justify-center shrink-0 border border-green-100 group-hover:bg-green-100 transition-colors">
                           <CheckCircle size={14} />
@@ -149,7 +167,11 @@ const CourseDetail = () => {
                 <div>
                   <h2 className="text-3xl font-bold text-[#2563EB] mb-10">Prerequisites</h2>
                   <div className="grid gap-6">
-                    {course.prerequisites.map((item, i) => (
+                    {(course.prerequisites || [
+                      "Basic computer skills",
+                      "Interest in learning",
+                      "Problem-solving mindset"
+                    ]).map((item, i) => (
                       <div key={i} className="flex items-center gap-4 group">
                         <div className="w-2.5 h-2.5 rounded-full bg-[#2563EB] group-hover:scale-125 transition-transform" />
                         <span className="text-lg text-slate-700 font-medium">{item}</span>
@@ -170,20 +192,23 @@ const CourseDetail = () => {
               >
                 <h2 className="text-3xl font-bold text-[#1E3A8A] mb-8">Course Curriculum</h2>
                 <div className="space-y-4">
-                  {[1, 2, 3, 4].map((step) => (
-                    <div key={step} className="bg-white/50 backdrop-blur-sm border border-blue-100 p-6 rounded-2xl flex items-center justify-between hover:bg-white transition-all cursor-pointer group">
+                  {course.topics?.map((topic, index) => (
+                    <div key={topic._id} className="bg-white/50 backdrop-blur-sm border border-blue-100 p-6 rounded-2xl flex items-center justify-between hover:bg-white transition-all cursor-pointer group">
                       <div className="flex items-center gap-6">
                         <div className="w-12 h-12 rounded-xl bg-[#1E3A8A] text-white flex items-center justify-center font-bold">
-                          0{step}
+                          {index + 1 < 10 ? `0${index + 1}` : index + 1}
                         </div>
                         <div>
-                          <h4 className="font-bold text-[#0F172A] text-lg">Module {step}: Core Concepts</h4>
-                          <p className="text-slate-500 text-sm">3 lessons • 45 mins</p>
+                          <h4 className="font-bold text-[#0F172A] text-lg">{topic.title}</h4>
+                          <p className="text-slate-500 text-sm">Topic {topic.index}</p>
                         </div>
                       </div>
                       <ChevronRight className="text-slate-400 group-hover:text-[#2563EB] transition-colors" />
                     </div>
                   ))}
+                  {(!course.topics || course.topics.length === 0) && (
+                    <p className="text-slate-500">No topics added yet.</p>
+                  )}
                 </div>
               </motion.div>
             )}
@@ -201,7 +226,7 @@ const CourseDetail = () => {
                 </div>
                 <div>
                   <div className="flex items-center gap-3 mb-2">
-                    <h3 className="text-3xl font-bold text-[#1E3A8A]">Prashanti Vasi</h3>
+                    <h3 className="text-3xl font-bold text-[#1E3A8A]">{course.instructor || 'TechLearn Expert'}</h3>
                     <Award size={24} className="text-yellow-500" />
                   </div>
                   <p className="text-[#2563EB] font-bold text-lg mb-6 tracking-wide uppercase">Senior Developer & Educator</p>
