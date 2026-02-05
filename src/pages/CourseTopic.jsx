@@ -247,9 +247,9 @@ const CourseTopic = () => {
             {activeTopic ? (
               <>
                 {shouldShowTitle && (
-                <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B4DFF] mb-6 md:mb-8 tracking-[0.04em] font-heading">
-                  {activeTopic.title}
-                </h1>
+                  <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-[#0B4DFF] mb-6 md:mb-8 tracking-[0.04em] font-heading">
+                    {activeTopic.title}
+                  </h1>
                 )}
 
                 <div className="space-y-5 md:space-y-8 text-slate-600 text-sm md:text-base leading-relaxed">
