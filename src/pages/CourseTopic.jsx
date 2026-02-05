@@ -4,6 +4,8 @@ import { BookOpen, ChevronLeft, ChevronRight, X, ArrowLeft } from 'lucide-react'
 import { api } from '../services/api';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { AnimatePresence } from 'framer-motion';
+import Loader from '../components/common/Loader';
 
 const CodePanel = ({ children, subtitle }) => (
   <div className="rounded-2xl overflow-hidden bg-gradient-to-br from-[#1f2a44] to-[#2c3a55] shadow-xl border border-slate-700/60 mb-6">
@@ -126,7 +128,9 @@ const CourseTopic = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#D7EEFF] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1E3A8A]"></div>
+        <AnimatePresence>
+          <Loader />
+        </AnimatePresence>
       </div>
     );
   }

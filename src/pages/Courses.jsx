@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Clock, Calendar, CheckCircle } from 'lucide-react';
 import { FaPython, FaJava, FaReact } from 'react-icons/fa';
 import { SiC, SiJavascript } from 'react-icons/si';
 import { api } from '../services/api';
+import Loader from '../components/common/Loader';
 
 const courseVisuals = [
   {
@@ -184,19 +185,27 @@ const Courses = () => {
 
         {/* Featured Categories */}
         <div className="grid md:grid-cols-3 gap-8 mb-12">
-          {featuredCourses.map((course) => {
-            const { icon, color, bgColor } = getCourseVisual(course.title);
-            return (
-              <CategoryCard
-                key={course._id}
-                id={course._id}
-                title={course.title}
-                icon={icon}
-                color={color}
-                bgColor={bgColor}
-              />
-            );
-          })}
+          <AnimatePresence>
+            {loading ? (
+              <div className="md:col-span-3 flex justify-center py-10">
+                <Loader />
+              </div>
+            ) : (
+            featuredCourses.map((course) => {
+              const { icon, color, bgColor } = getCourseVisual(course.title);
+              return (
+                <CategoryCard
+                  key={course._id}
+                  id={course._id}
+                  title={course.title}
+                  icon={icon}
+                  color={color}
+                  bgColor={bgColor}
+                />
+              );
+            })
+            )}
+          </AnimatePresence>
         </div>
 
         {/* View All Button */}

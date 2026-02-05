@@ -3,6 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ArrowLeft, Clock, BookOpen, CheckCircle, Award, Play, ChevronRight, User } from 'lucide-react';
 import { api } from '../services/api';
+import Loader from '../components/common/Loader';
 
 const CourseDetail = () => {
   const { id } = useParams();
@@ -29,7 +30,9 @@ const CourseDetail = () => {
   if (loading) {
     return (
       <div className="min-h-screen bg-[#CCEEFF] flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#1E3A8A]"></div>
+        <AnimatePresence>
+          <Loader />
+        </AnimatePresence>
       </div>
     );
   }
