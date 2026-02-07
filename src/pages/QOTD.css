@@ -186,6 +186,10 @@
   color: #1a2332;
 }
 
+.qotd-container.light .tab-btn.active {
+  color: #fff;
+}
+
 .panel-content {
   flex: 1;
   overflow-y: auto;

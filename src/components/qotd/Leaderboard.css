@@ -13,7 +13,7 @@
     margin: 0 0 8px 0;
 }
 
-[data-theme="light"] .leaderboard-header h3 {
+.qotd-container.light .leaderboard-header h3 {
     color: #1a2332;
 }
 
@@ -42,24 +42,30 @@
     transition: all 0.2s ease;
 }
 
+.qotd-container.light .diff-tab {
+    background: rgba(230, 236, 246, 0.9);
+    color: #4b5563;
+    border: 1px solid rgba(59, 116, 255, 0.2);
+}
+
 .diff-tab:hover {
     border-color: rgba(59, 116, 255, 0.4);
 }
 
-.diff-tab.active.easy {
-    background: linear-gradient(135deg, rgba(0, 184, 163, 0.15) 0%, rgba(0, 217, 196, 0.1) 100%);
+.diff-tab.active.beginner {
+    background: linear-gradient(135deg, rgba(0, 184, 163, 0.2) 0%, rgba(0, 217, 196, 0.12) 100%);
     border-color: #00d9c4;
     color: #00d9c4;
 }
 
-.diff-tab.active.medium {
-    background: linear-gradient(135deg, rgba(255, 161, 22, 0.15) 0%, rgba(255, 184, 77, 0.1) 100%);
+.diff-tab.active.intermediate {
+    background: linear-gradient(135deg, rgba(255, 161, 22, 0.2) 0%, rgba(255, 184, 77, 0.12) 100%);
     border-color: #ffb84d;
-    color: #ffb84d;
+    color: #f59e0b;
 }
 
-.diff-tab.active.hard {
-    background: linear-gradient(135deg, rgba(239, 71, 67, 0.15) 0%, rgba(255, 107, 107, 0.1) 100%);
+.diff-tab.active.advanced {
+    background: linear-gradient(135deg, rgba(239, 71, 67, 0.2) 0%, rgba(255, 107, 107, 0.12) 100%);
     border-color: #ff6b6b;
     color: #ff6b6b;
 }
@@ -71,8 +77,9 @@
     overflow: hidden;
 }
 
-[data-theme="light"] .leaderboard-table {
+.qotd-container.light .leaderboard-table {
     background: rgba(248, 250, 252, 0.9);
+    border: 1px solid rgba(59, 116, 255, 0.18);
 }
 
 .table-header {
@@ -87,6 +94,11 @@
     color: #8892a6;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+}
+
+.qotd-container.light .table-header {
+    color: #6b7280;
+    background: rgba(59, 116, 255, 0.12);
 }
 
 .table-body {
@@ -120,7 +132,7 @@
     color: #e4e8ed;
 }
 
-[data-theme="light"] .col-user {
+.qotd-container.light .col-user {
     color: #1a2332;
 }
 
@@ -129,16 +141,28 @@
     font-weight: 600;
 }
 
+.qotd-container.light .col-score {
+    color: #0ea5a3;
+}
+
 .col-time {
     color: #8892a6;
     font-family: 'Fira Code', monospace;
     font-size: 0.875rem;
 }
 
+.qotd-container.light .col-time {
+    color: #6b7280;
+}
+
 .no-data {
     padding: 40px 20px;
     text-align: center;
     color: #8892a6;
+}
+
+.qotd-container.light .no-data {
+    color: #6b7280;
 }
 
 .no-data span {
