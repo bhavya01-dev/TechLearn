@@ -8,6 +8,7 @@ import CourseTopic from '../pages/CourseTopic';
 import Dashboard from '../pages/Dashboard';
 import Login from '../pages/Login';
 import Register from '../pages/Register';
+import QOTD from '../pages/QOTD';
 import ComingSoon from '../components/common/ComingSoon';
 import ProtectedRoute from './ProtectedRoute';
 
@@ -20,6 +21,7 @@ const AppRoutes = () => {
       <Route path="/learn/courses" element={<Courses />} />
       <Route path="/learn/courses/:id" element={<CourseDetail />} />
       <Route path="/learn/courses/:id/learn" element={<CourseTopic />} />
+      <Route path="/qotd" element={<QOTD />} />
       <Route
         path="/dashboard/*"
         element={

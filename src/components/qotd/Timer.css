@@ -1,0 +1,64 @@
+.timer-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 16px;
+    background: rgba(59, 116, 255, 0.08);
+    border: 1px solid rgba(59, 116, 255, 0.2);
+    border-radius: 8px;
+}
+
+.timer-display {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.timer-icon {
+    font-size: 1rem;
+}
+
+.timer-value {
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #3B74FF;
+    min-width: 60px;
+}
+
+.timer-controls {
+    display: flex;
+    gap: 4px;
+}
+
+.timer-btn {
+    width: 28px;
+    height: 28px;
+    border: none;
+    border-radius: 6px;
+    background: rgba(59, 116, 255, 0.1);
+    color: #8892a6;
+    font-size: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.timer-btn:hover {
+    background: rgba(59, 116, 255, 0.2);
+    color: #3B74FF;
+}
+
+.timer-btn.pause {
+    color: #ffa116;
+}
+
+.timer-btn.play {
+    color: #00d9c4;
+}
+
+.timer-btn.reset:hover {
+    color: #ff6b6b;
+}

@@ -1,13 +1,12 @@
 import crypto from "crypto";
-import Question from '../models/Question.js';
-import User from '../models/User.js';
+import Question from "../models/Question.js";
+import User from "../models/User.js";
 import Submission from "../models/Submission.js";
 import GuestUsage from "../models/GuestUsage.js";
 
-// Fetch today's question
 export const getTodayQuestion = async (req, res) => {
   try {
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     const question = await Question.findOne({ activeDate: today });
 
     if (!question) {
@@ -32,7 +31,7 @@ export const getTodayQuestion = async (req, res) => {
           await user.save();
         }
         const maxRuns = user.plan === "PAID" ? 4 : 2;
-        const lastSubDate = user.lastSubmissionDate ? user.lastSubmissionDate.toISOString().split('T')[0] : null;
+        const lastSubDate = user.lastSubmissionDate ? user.lastSubmissionDate.toISOString().split("T")[0] : null;
         userProgress = {
           runsRemaining: Math.max(0, maxRuns - user.dailyRunCount),
           hasSubmitted: lastSubDate === today,
@@ -59,12 +58,9 @@ export const getTodayQuestion = async (req, res) => {
   }
 };
 
-// Evaluation
-
-// 1. Define the Judge0 Language IDs
 const LANGUAGE_MAP = {
-  "java": 62,   // OpenJDK 13
-  "python": 71  // Python 3.8.1
+  java: 62, // OpenJDK 13
+  python: 71 // Python 3.8.1
 };
 
 const difficultyToLeaderboard = (difficulty) => {
@@ -105,8 +101,7 @@ const getGuestUsage = async (req, today, createIfMissing) => {
 export const submitSolution = async (req, res) => {
   try {
     const { questionId, code, language, isSubmit } = req.body;
-
-    const today = new Date().toISOString().split('T')[0];
+    const today = new Date().toISOString().split("T")[0];
     let user = null;
     let guest = null;
     let maxRuns = 2;
@@ -137,7 +132,7 @@ export const submitSolution = async (req, res) => {
       }
 
       const lastSubmissionDateStr = user.lastSubmissionDate
-        ? user.lastSubmissionDate.toISOString().split('T')[0]
+        ? user.lastSubmissionDate.toISOString().split("T")[0]
         : null;
 
       if (isSubmit && lastSubmissionDateStr === today) {
@@ -161,9 +156,7 @@ export const submitSolution = async (req, res) => {
       }
     }
 
-    // 2. Look up the ID based on the incoming request
-    const languageId = LANGUAGE_MAP[language.toLowerCase()];
-
+    const languageId = LANGUAGE_MAP[(language || "").toLowerCase()];
     if (!languageId) {
       return res.status(400).json({ message: "Oops! We don't support that language yet." });
     }
@@ -171,7 +164,6 @@ export const submitSolution = async (req, res) => {
     const question = await Question.findById(questionId);
     if (!question) return res.status(404).json({ message: "Ouch! We couldn't find that question." });
 
-    // 3. Dynamic Fetch call
     const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions?wait=true", {
       method: "POST",
       headers: {
@@ -241,9 +233,11 @@ export const submitSolution = async (req, res) => {
       memory: judgeResult.memory,
       stdout: judgeResult.stdout,
       runsRemaining,
-      hasSubmitted: submissionSaved || (user?.lastSubmissionDate && user.lastSubmissionDate.toISOString().split('T')[0] === today) || (guest?.hasSubmitted === true)
+      hasSubmitted:
+        submissionSaved
+        || (user?.lastSubmissionDate && user.lastSubmissionDate.toISOString().split("T")[0] === today)
+        || (guest?.hasSubmitted === true)
     });
-
   } catch (error) {
     res.status(500).json({ message: "Something went wrong on our end. We're looking into it!", error: error.message });
   }

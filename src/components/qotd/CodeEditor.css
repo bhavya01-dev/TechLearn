@@ -1,0 +1,20 @@
+.code-editor-wrapper {
+    height: 100%;
+    width: 100%;
+    overflow: hidden;
+    border-radius: 0;
+}
+
+.code-editor-wrapper .monaco-editor {
+    padding-top: 8px;
+}
+
+/* Custom scrollbar for monaco editor */
+.code-editor-wrapper .monaco-scrollable-element>.scrollbar>.slider {
+    background: rgba(59, 116, 255, 0.3) !important;
+    border-radius: 4px;
+}
+
+.code-editor-wrapper .monaco-scrollable-element>.scrollbar>.slider:hover {
+    background: rgba(59, 116, 255, 0.5) !important;
+}

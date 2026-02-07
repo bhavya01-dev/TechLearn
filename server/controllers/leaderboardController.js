@@ -2,8 +2,17 @@ import Submission from "../models/Submission.js";
 
 const leaderboard = async (req, res) => {
   try {
-    const difficulty = req.params.difficulty;
-    if (!["Beginner", "Intermediate", "Advanced"].includes(difficulty)) {
+    const rawDifficulty = req.params.difficulty;
+    const normalized = (rawDifficulty || "").toLowerCase();
+    const difficulty = normalized === "easy" || normalized === "beginner"
+      ? "Beginner"
+      : normalized === "medium" || normalized === "intermediate"
+        ? "Intermediate"
+        : normalized === "hard" || normalized === "advanced"
+          ? "Advanced"
+          : null;
+
+    if (!difficulty) {
       return res.status(400).json({ message: "Please choose a valid difficulty: Beginner, Intermediate, or Advanced." });
     }
 

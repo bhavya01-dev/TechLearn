@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
-import { Moon, Menu, X } from 'lucide-react';
+import { Moon, Sun, Menu, X } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
+import { useTheme } from '../../contexts/ThemeContext';
 import logo from '../../assets/logo.png';
 
 const Navbar = () => {
@@ -9,6 +10,7 @@ const Navbar = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { scrollY } = useScroll();
   const location = useLocation();
+  const { isDarkMode, toggleTheme } = useTheme();
 
   useMotionValueEvent(scrollY, "change", (latest) => {
     if (latest > 50) {
@@ -20,6 +22,7 @@ const Navbar = () => {
 
   const navLinks = [
     { name: 'Learn', href: '/learn' },
+    { name: 'QOTD', href: '/qotd' },
     { name: 'Build', href: '/coming-soon' },
     { name: 'Dashboard', href: '/dashboard' },
   ];
@@ -61,13 +64,24 @@ const Navbar = () => {
           <Link to="/login" className="text-[#334155] hover:text-[#1E3A8A] font-medium transition-colors text-sm tracking-wide">
             Log In
           </Link>
-          <button className="text-[#334155] hover:text-[#1E3A8A] transition-colors">
-            <Moon size={20} />
+          <button
+            onClick={toggleTheme}
+            className="text-[#334155] hover:text-[#1E3A8A] transition-colors p-2 rounded-full hover:bg-[#1E3A8A]/10"
+            aria-label="Toggle theme"
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
           </button>
         </div>
 
         {/* Mobile Toggle */}
-        <div className="md:hidden flex items-center">
+        <div className="md:hidden flex items-center gap-2">
+          <button
+            onClick={toggleTheme}
+            className="text-[#1E3A8A] p-2"
+            aria-label="Toggle theme"
+          >
+            {isDarkMode ? <Sun size={20} /> : <Moon size={20} />}
+          </button>
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="text-[#1E3A8A]"
@@ -111,3 +125,4 @@ const Navbar = () => {
 };
 
 export default Navbar;
+

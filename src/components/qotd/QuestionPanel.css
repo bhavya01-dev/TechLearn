@@ -1,0 +1,190 @@
+.question-panel {
+    padding: 8px;
+}
+
+.question-header {
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid rgba(59, 116, 255, 0.15);
+}
+
+.question-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #fff;
+    margin: 0 0 12px 0;
+    line-height: 1.3;
+}
+
+[data-theme="light"] .question-title {
+    color: #1a2332;
+}
+
+.question-meta {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.meta-difficulty {
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.meta-difficulty.easy {
+    background: rgba(0, 184, 163, 0.15);
+    color: #00d9c4;
+}
+
+.meta-difficulty.medium {
+    background: rgba(255, 161, 22, 0.15);
+    color: #ffb84d;
+}
+
+.meta-difficulty.hard {
+    background: rgba(239, 71, 67, 0.15);
+    color: #ff6b6b;
+}
+
+.question-description {
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: #c9d1d9;
+}
+
+[data-theme="light"] .question-description {
+    color: #374151;
+}
+
+.question-description p {
+    margin: 0 0 16px 0;
+}
+
+.question-description code {
+    background: rgba(59, 116, 255, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.875em;
+    color: #79c0ff;
+}
+
+[data-theme="light"] .question-description code {
+    background: rgba(59, 116, 255, 0.08);
+    color: #3B74FF;
+}
+
+.question-description pre {
+    background: rgba(10, 15, 28, 0.8);
+    padding: 16px;
+    border-radius: 8px;
+    overflow-x: auto;
+    margin: 16px 0;
+    border: 1px solid rgba(59, 116, 255, 0.1);
+}
+
+[data-theme="light"] .question-description pre {
+    background: rgba(240, 244, 248, 0.9);
+    border-color: rgba(59, 116, 255, 0.15);
+}
+
+.question-description pre code {
+    background: transparent;
+    padding: 0;
+    color: #a0aec0;
+}
+
+[data-theme="light"] .question-description pre code {
+    color: #4a5568;
+}
+
+.question-description ul,
+.question-description ol {
+    margin: 16px 0;
+    padding-left: 24px;
+}
+
+.question-description li {
+    margin: 8px 0;
+}
+
+.question-description strong {
+    color: #e4e8ed;
+    font-weight: 600;
+}
+
+[data-theme="light"] .question-description strong {
+    color: #1a2332;
+}
+
+/* Examples */
+.question-examples {
+    margin-top: 32px;
+    padding-top: 24px;
+    border-top: 1px solid rgba(59, 116, 255, 0.1);
+}
+
+.question-examples h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #e4e8ed;
+    margin: 0 0 16px 0;
+}
+
+[data-theme="light"] .question-examples h3 {
+    color: #1a2332;
+}
+
+.example-block {
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(59, 116, 255, 0.15);
+    border-radius: 8px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+[data-theme="light"] .example-block {
+    background: rgba(248, 250, 252, 0.9);
+}
+
+.example-label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #3B74FF;
+    margin-bottom: 12px;
+}
+
+.example-content {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.example-row {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.example-key {
+    font-weight: 600;
+    color: #8892a6;
+    min-width: 60px;
+    font-size: 0.875rem;
+}
+
+.example-row code {
+    background: rgba(59, 116, 255, 0.08);
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: 'Fira Code', 'Consolas', monospace;
+    font-size: 0.875rem;
+    color: #a0aec0;
+}
+
+[data-theme="light"] .example-row code {
+    color: #4a5568;
+}
