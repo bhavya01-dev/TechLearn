@@ -1,9 +1,9 @@
-import { Router } from "express";
+import express from "express";
 import leaderboard from "../controllers/leaderboardController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import optionalAuth from "../middleware/optionalAuth.js";
 
-const router = Router();
+const router = express.Router();
 
-router.get("/:difficulty", authMiddleware, leaderboard);
+router.get("/:difficulty", optionalAuth, leaderboard);
 
 export default router;

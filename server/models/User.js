@@ -38,6 +38,14 @@ const userSchema = new Schema({
         enum: ["FREE", "PAID"],
         default: "FREE"
     },
+    dailyRunCount: {
+        type: Number,
+        default: 0
+    },
+    lastRunDate: {
+        type: String,
+        default: null
+    },
 });
 
 export default model('User', userSchema);

@@ -1,30 +1,39 @@
-import User from "../models/User.js";
 import Submission from "../models/Submission.js";
 
 const leaderboard = async (req, res) => {
   try {
-    const user = await User.findById(req.user.id);
-    if (user.plan !== "PAID") {
-      return res.status(403).json({
-        message: "Upgrade to paid plan to appear on leaderboard"
-      });
+    const difficulty = req.params.difficulty;
+    if (!["Beginner", "Intermediate", "Advanced"].includes(difficulty)) {
+      return res.status(400).json({ message: "Please choose a valid difficulty: Beginner, Intermediate, or Advanced." });
     }
 
     const start = new Date();
     start.setUTCHours(0, 0, 0, 0);
-
     const end = new Date();
     end.setUTCHours(23, 59, 59, 999);
 
     const leaderboardData = await Submission.find({
-      difficulty: req.params.difficulty,
+      difficulty,
       result: "Correct",
       submittedAt: { $gte: start, $lte: end }
-    }).populate("userId", "name");
+    })
+      .sort({ submittedAt: 1 })
+      .populate({
+        path: "userId",
+        select: "name plan",
+        match: { plan: "PAID" }
+      });
 
-    res.json(leaderboardData);
+    const filtered = leaderboardData.filter(sub => sub.userId !== null);
+
+    res.json(filtered.map((sub, index) => ({
+      rank: index + 1,
+      username: sub.userId.name,
+      result: sub.result,
+      submittedAt: sub.submittedAt
+    })));
   } catch (err) {
-    res.status(500).json({ success: false, message: err.message });
+    res.status(500).json({ success: false, message: "Something went wrong on our end. We're looking into it!" });
   }
 };
 

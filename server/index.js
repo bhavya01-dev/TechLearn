@@ -12,6 +12,7 @@ connectDB();
 // Route files
 import courses from './routes/courseRoutes.js';
 import qotdRoutes from './routes/qotdRoutes.js';
+import leaderboardRoutes from './routes/leaderboardRoutes.js';
 import userRouter from './routes/userRoute.js';
 import leaderboardRoutes from './routes/leaderboardRoutes.js';
 
@@ -49,6 +50,7 @@ app.use((req, res, next) => {
 // Mount routers
 app.use('/api/courses', courses);
 app.use('/api/v1/qotd', qotdRoutes);
+app.use('/api/v1/leaderboard', leaderboardRoutes);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/leaderboard", leaderboardRoutes);
 
