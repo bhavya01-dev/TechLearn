@@ -1,6 +1,6 @@
-import mongoose from 'mongoose';
-import dotenv from 'dotenv';
-import Question from './models/Question.js';
+import mongoose from "mongoose";
+import dotenv from "dotenv";
+import Question from "./models/Question.js";
 
 dotenv.config();
 
@@ -22,7 +22,7 @@ const questions = [
     ],
     hints: ["Try using a hash map to store values.", "What if you store the complement?"],
     solution: "Use a hash map to store each number's index. For each number, check if target - num exists in the map.",
-    activeDate: new Date().toISOString().split('T')[0]
+    activeDate: new Date().toISOString().split("T")[0]
   },
   {
     title: "2. Palindrome Number",
@@ -41,14 +41,14 @@ const questions = [
     ],
     hints: ["Negative numbers are not palindromes.", "Can you reverse only half of the number?"],
     solution: "Reverse half the number and compare with the other half to avoid overflow.",
-    activeDate: new Date(Date.now() + 86400000).toISOString().split('T')[0]
+    activeDate: new Date(Date.now() + 86400000).toISOString().split("T")[0]
   }
 ];
 
 const seedDB = async () => {
   try {
     await mongoose.connect(process.env.MONGO_URI);
-    await Question.deleteMany(); // Clears existing questions
+    await Question.deleteMany();
     await Question.insertMany(questions);
     console.log("Database Seeded Successfully!");
     process.exit();

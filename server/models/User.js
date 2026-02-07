@@ -29,6 +29,23 @@ const userSchema = new Schema({
         type: Date,
         default: Date.now,
     },
+    lastSubmissionDate: {
+        type: Date,
+        default: null
+    },
+    plan: {
+        type: String,
+        enum: ["FREE", "PAID"],
+        default: "FREE"
+    },
+    dailyRunCount: {
+        type: Number,
+        default: 0
+    },
+    lastRunDate: {
+        type: String,
+        default: null
+    },
 });
 
 export default model('User', userSchema);

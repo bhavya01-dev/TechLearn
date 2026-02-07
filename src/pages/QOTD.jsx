@@ -20,11 +20,12 @@ const QOTD = () => {
     const [activeTab, setActiveTab] = useState('description');
     const [runsRemaining, setRunsRemaining] = useState(2);
     const [hasSubmitted, setHasSubmitted] = useState(false);
+    const [isPaidUser, setIsPaidUser] = useState(false);
+    const [solutionText, setSolutionText] = useState('');
     const [revealedHints, setRevealedHints] = useState([]);
     const [elapsedTime, setElapsedTime] = useState(0);
     const [streak, setStreak] = useState(5);
     const [showNextButton, setShowNextButton] = useState(false);
-    const isPaidUser = false;
 
     useEffect(() => {
         const fetchQuestion = async () => {
@@ -32,6 +33,11 @@ const QOTD = () => {
                 const question = await api.getTodayQuestion();
                 setCurrentQuestion(question);
                 setCode(question?.starterCode?.[selectedLanguage] || '');
+                if (question?.userProgress) {
+                    setRunsRemaining(question.userProgress.runsRemaining ?? 2);
+                    setHasSubmitted(question.userProgress.hasSubmitted ?? false);
+                    setIsPaidUser(question.userProgress.isPaidUser ?? false);
+                }
             } catch (error) {
                 console.error('Failed to fetch today\'s question:', error);
                 setOutput('❌ Could not load today\'s question. Please try again later.');
@@ -48,9 +54,22 @@ const QOTD = () => {
         }
     }, [selectedLanguage, currentQuestion]);
 
+    useEffect(() => {
+        const fetchSolution = async () => {
+            if (!isPaidUser || activeTab !== 'solutions' || !currentQuestion?._id) return;
+            try {
+                const result = await api.get(`/v1/qotd/solution/${currentQuestion._id}`);
+                setSolutionText(result?.solution || 'Solution not available.');
+            } catch (error) {
+                setSolutionText(error.message || 'Solution not available.');
+            }
+        };
+        fetchSolution();
+    }, [activeTab, isPaidUser, currentQuestion?._id]);
+
     const handleRun = async () => {
         if (runsRemaining <= 0) {
-            setOutput('❌ No runs remaining. Upgrade to Premium for more runs!');
+            setOutput('❌ You have no runs remaining for today. Try again tomorrow!');
             return;
         }
 
@@ -58,8 +77,15 @@ const QOTD = () => {
         setOutput('⏳ Compiling and running your code...');
 
         try {
-            const result = await api.submitSolution(currentQuestion._id, code, selectedLanguage);
-            setRunsRemaining(prev => prev - 1);
+            const result = await api.submitSolution(currentQuestion._id, code, selectedLanguage, false);
+            if (typeof result.runsRemaining === 'number') {
+                setRunsRemaining(result.runsRemaining);
+            } else {
+                setRunsRemaining(prev => Math.max(0, prev - 1));
+            }
+            if (typeof result.hasSubmitted === 'boolean') {
+                setHasSubmitted(result.hasSubmitted);
+            }
 
             let outputMsg = result.status === 'Accepted'
                 ? '✅ Test Case Passed!\n\n'
@@ -72,7 +98,7 @@ const QOTD = () => {
 
             setOutput(outputMsg);
         } catch (error) {
-            setOutput(`❌ Error: ${error.message}`);
+            setOutput(`❌ ${error.message}`);
         } finally {
             setIsRunning(false);
         }
@@ -94,7 +120,7 @@ const QOTD = () => {
         setOutput('📤 Submitting your solution...');
 
         try {
-            const result = await api.submitSolution(currentQuestion._id, code, selectedLanguage);
+            const result = await api.submitSolution(currentQuestion._id, code, selectedLanguage, true);
 
             if (result.status === 'Accepted') {
                 const timeStr = `${Math.floor(elapsedTime / 60)}m ${elapsedTime % 60}s`;
@@ -116,8 +142,14 @@ const QOTD = () => {
                 outputMsg += '\n💡 Tip: Check your logic and try again!';
                 setOutput(outputMsg);
             }
+            if (typeof result.runsRemaining === 'number') {
+                setRunsRemaining(result.runsRemaining);
+            }
+            if (typeof result.hasSubmitted === 'boolean') {
+                setHasSubmitted(result.hasSubmitted);
+            }
         } catch (error) {
-            setOutput(`❌ Submission Error: ${error.message}`);
+            setOutput(`❌ ${error.message}`);
         } finally {
             setIsRunning(false);
         }
@@ -185,9 +217,9 @@ const QOTD = () => {
                         <button
                             className={`tab-btn ${activeTab === 'solutions' ? 'active' : ''}`}
                             onClick={() => setActiveTab('solutions')}
-                            disabled={!isPaidUser && !hasSubmitted}
+                            disabled={!isPaidUser}
                         >
-                            📖 Solutions {!isPaidUser && !hasSubmitted && '🔒'}
+                            📖 Solutions {!isPaidUser && '🔒'}
                         </button>
                         <button
                             className={`tab-btn ${activeTab === 'leaderboard' ? 'active' : ''}`}
@@ -237,11 +269,11 @@ const QOTD = () => {
                         )}
                         {activeTab === 'solutions' && (
                             <div className="solutions-panel">
-                                {isPaidUser || hasSubmitted ? (
+                                {isPaidUser ? (
                                     <div className="solution-content">
                                         <h3>📖 Official Solution</h3>
                                         <div className="solution-explanation">
-                                            <p>{currentQuestion.solution}</p>
+                                            <p>{solutionText || 'Loading solution...'}</p>
                                         </div>
                                         <h4>Example Implementation:</h4>
                                         <pre><code>{currentQuestion.starterCode?.python}</code></pre>
@@ -250,7 +282,7 @@ const QOTD = () => {
                                     <div className="locked-content">
                                         <span className="lock-icon">🔒</span>
                                         <h3>Solution Locked</h3>
-                                        <p>Submit your solution or upgrade to Premium to view the official solution.</p>
+                                        <p>Upgrade to Premium to view the official solution.</p>
                                     </div>
                                 )}
                             </div>

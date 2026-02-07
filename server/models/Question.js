@@ -1,8 +1,8 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const questionSchema = new mongoose.Schema({
   title: { type: String, required: true },
-  difficulty: { type: String, enum: ['Easy', 'Medium', 'Hard'], default: 'Medium' },
+  difficulty: { type: String, enum: ["Beginner", "Intermediate", "Advanced", "Easy", "Medium", "Hard"], default: "Medium" },
   description: { type: String, required: true },
   problemStatement: { type: String, required: true },
   sampleInput: String,
@@ -22,4 +22,4 @@ const questionSchema = new mongoose.Schema({
   activeDate: { type: String, required: true, unique: true } // Format: YYYY-MM-DD
 });
 
-export default mongoose.model('Question', questionSchema);
+export default mongoose.model("Question", questionSchema);
