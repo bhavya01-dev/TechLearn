@@ -1,11 +1,11 @@
-import { find, findById, findOne, create } from '../models/Course';
+import Course from '../models/Course.js';
 
 // @desc    Get all courses
 // @route   GET /api/v1/courses
 // @access  Public
 export async function getCourses(req, res, next) {
     try {
-        const courses = await find();
+        const courses = await Course.find();
         res.status(200).json({ success: true, count: courses.length, data: courses });
     } catch (err) {
         res.status(400).json({ success: false });
@@ -23,12 +23,12 @@ export async function getCourse(req, res, next) {
 
         // Check if ID is a valid MongoDB ObjectId
         if (Types.ObjectId.isValid(req.params.id)) {
-            course = await findById(req.params.id);
+            course = await Course.findById(req.params.id);
         } else {
             // If not a valid ObjectId, try to find by title (case-insensitive) or slug
             // For now, we'll try to match the title by replacing hyphens with spaces
             const titleSearch = req.params.id.split('-').join(' ');
-            course = await findOne({
+            course = await Course.findOne({
                 $or: [
                     { title: new RegExp(`^${titleSearch}$`, 'i') },
                     { title: new RegExp(`^${req.params.id}$`, 'i') }
@@ -52,7 +52,7 @@ export async function getCourse(req, res, next) {
 // @access  Private/Admin
 export async function createCourse(req, res, next) {
     try {
-        const course = await create(req.body);
+        const course = await Course.create(req.body);
         res.status(201).json({ success: true, data: course });
     } catch (err) {
         res.status(400).json({ success: false, message: err.message });
