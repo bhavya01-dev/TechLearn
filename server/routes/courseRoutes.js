@@ -1,11 +1,7 @@
-const express = require('express');
-const {
-    getCourses,
-    getCourse,
-    createCourse
-} = require('../controllers/courseController');
+import { Router } from 'express';
+import { getCourses, getCourse, createCourse } from '../controllers/courseController';
 
-const router = express.Router();
+const router = Router();
 
 router
     .route('/')
@@ -16,4 +12,4 @@ router
     .route('/:id')
     .get(getCourse);
 
-module.exports = router;
+export default router;
