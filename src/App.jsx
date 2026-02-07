@@ -4,6 +4,7 @@ import Navbar from './components/layout/Navbar';
 import Footer from './components/layout/Footer';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './contexts/AuthContext';
+import { ThemeProvider } from './contexts/ThemeContext';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
@@ -16,28 +17,31 @@ const ScrollToTop = () => {
 
 const AppContent = () => {
   const location = useLocation();
-  // Hide Navbar/Footer on dashboard/login for cleaner UI
+  // Hide Navbar/Footer on dashboard/login/qotd for cleaner UI
   const isAuthPage = location.pathname === '/login' || location.pathname === '/register';
+  const isQOTDPage = location.pathname === '/qotd';
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-[#EAF5FF] to-[#F8FAFC] font-sans selection:bg-[#2563EB] selection:text-white overflow-x-hidden flex flex-col">
-      {!isAuthPage && <Navbar />}
+    <div className="min-h-screen bg-gradient-to-br from-[#E0F2FE] via-[#EAF5FF] to-[#F8FAFC] dark:from-[#0a0f1c] dark:via-[#0d1526] dark:to-[#0f1a2e] font-sans selection:bg-[#2563EB] selection:text-white overflow-x-hidden flex flex-col transition-colors duration-300">
+      {!isAuthPage && !isQOTDPage && <Navbar />}
       <main className="flex-grow w-full">
         <AppRoutes />
       </main>
-      {!isAuthPage && <Footer />}
+      {!isAuthPage && !isQOTDPage && <Footer />}
     </div>
   );
 };
 
 const App = () => {
   return (
-    <AuthProvider>
-      <Router>
-        <ScrollToTop />
-        <AppContent />
-      </Router>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <Router>
+          <ScrollToTop />
+          <AppContent />
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   );
 };
 

@@ -1,0 +1,140 @@
+.streak-badge {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px 20px;
+    background: rgba(15, 23, 42, 0.6);
+    border: 1px solid rgba(59, 116, 255, 0.2);
+    border-radius: 12px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
+[data-theme="light"] .streak-badge {
+    background: rgba(248, 250, 252, 0.9);
+}
+
+.streak-badge:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(59, 116, 255, 0.15);
+}
+
+/* Streak Levels */
+.streak-badge.starting {
+    border-color: rgba(100, 116, 139, 0.3);
+}
+
+.streak-badge.warming {
+    border-color: rgba(251, 191, 36, 0.4);
+    box-shadow: 0 0 20px rgba(251, 191, 36, 0.1);
+}
+
+.streak-badge.hot {
+    border-color: rgba(249, 115, 22, 0.5);
+    box-shadow: 0 0 25px rgba(249, 115, 22, 0.15);
+}
+
+.streak-badge.blazing {
+    border-color: rgba(239, 68, 68, 0.5);
+    box-shadow: 0 0 30px rgba(239, 68, 68, 0.2);
+    animation: pulse-glow 2s infinite;
+}
+
+.streak-badge.legendary {
+    border-color: rgba(168, 85, 247, 0.6);
+    box-shadow: 0 0 35px rgba(168, 85, 247, 0.25);
+    background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(59, 116, 255, 0.1) 100%);
+    animation: rainbow-glow 3s infinite;
+}
+
+@keyframes pulse-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+    }
+
+    50% {
+        box-shadow: 0 0 35px rgba(239, 68, 68, 0.4);
+    }
+}
+
+@keyframes rainbow-glow {
+
+    0%,
+    100% {
+        box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+    }
+
+    33% {
+        box-shadow: 0 0 35px rgba(59, 116, 255, 0.3);
+    }
+
+    66% {
+        box-shadow: 0 0 35px rgba(236, 72, 153, 0.3);
+    }
+}
+
+.streak-icon {
+    font-size: 2rem;
+    margin-bottom: 8px;
+    animation: bounce 1s ease infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-4px);
+    }
+}
+
+.streak-info {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.streak-count {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: #3B74FF;
+}
+
+.streak-label {
+    font-size: 0.75rem;
+    color: #8892a6;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.streak-message {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #e4e8ed;
+}
+
+[data-theme="light"] .streak-message {
+    color: #334155;
+}
+
+.streak-upgrade-hint {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: rgba(59, 116, 255, 0.1);
+    border-radius: 6px;
+    font-size: 0.75rem;
+    color: #8892a6;
+}
+
+.streak-upgrade-hint .lock-icon {
+    font-size: 0.875rem;
+}
