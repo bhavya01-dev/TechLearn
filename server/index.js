@@ -1,7 +1,7 @@
 import express, { json } from 'express';
 import { config } from 'dotenv';
 import cors from 'cors';
-import connectDB from './config/db';
+import connectDB from './config/db.js';
 
 // Load env vars
 config();
@@ -10,7 +10,7 @@ config();
 connectDB();
 
 // Route files
-import courses from './routes/courseRoutes';
+import courses from './routes/courseRoutes.js';
 import qotdRoutes from './routes/qotdRoutes.js';
 
 const app = express();

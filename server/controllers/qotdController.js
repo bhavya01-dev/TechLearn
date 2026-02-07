@@ -43,7 +43,7 @@ export const submitSolution = async (req, res) => {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        "X-RapidAPI-Key": process.env.JUDGE0_KEY 
+        "X-RapidAPI-Key": process.env.JUDGE0_KEY
       },
       body: JSON.stringify({
         source_code: code,
@@ -54,6 +54,13 @@ export const submitSolution = async (req, res) => {
     });
 
     const judgeResult = await response.json();
+
+    if (!judgeResult || !judgeResult.status) {
+      return res.status(500).json({
+        message: "Evaluation failed: Invalid response from judge service",
+        judgeResult
+      });
+    }
 
     res.status(200).json({
       status: judgeResult.status.description,
