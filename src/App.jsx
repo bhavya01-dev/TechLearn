@@ -5,6 +5,8 @@ import Footer from './components/layout/Footer';
 import AppRoutes from './routes/AppRoutes';
 import { AuthProvider } from './contexts/AuthContext';
 import { ThemeProvider } from './contexts/ThemeContext';
+import { useState, useEffect } from 'react';
+import Loader from './pages/QOTD.jsx';
 
 // Scroll to top on route change
 const ScrollToTop = () => {
