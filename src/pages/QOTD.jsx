@@ -9,6 +9,64 @@ import StreakBadge from '../components/qotd/StreakBadge';
 import { useTheme } from '../contexts/ThemeContext';
 import { Moon, Sun, Home } from 'lucide-react';
 import './QOTD.css';
+import React from 'react';
+import './QOTD.css';
+
+const Loader = () => {
+  return (
+    <div className="loader-wrapper">
+      <div className="scene">
+        {/* 4 mini cubes in 2x2 formation */}
+        <div className="main-cube">
+          {/* Top-left cube */}
+          <div className="mini-cube pos-1">
+            <div className="face front"></div>
+            <div className="face back"></div>
+            <div className="face right"></div>
+            <div className="face left"></div>
+            <div className="face top"></div>
+            <div className="face bottom"></div>
+          </div>
+          
+          {/* Top-right cube */}
+          <div className="mini-cube pos-2">
+            <div className="face front"></div>
+            <div className="face back"></div>
+            <div className="face right"></div>
+            <div className="face left"></div>
+            <div className="face top"></div>
+            <div className="face bottom"></div>
+          </div>
+          
+          {/* Bottom-left cube */}
+          <div className="mini-cube pos-3">
+            <div className="face front"></div>
+            <div className="face back"></div>
+            <div className="face right"></div>
+            <div className="face left"></div>
+            <div className="face top"></div>
+            <div className="face bottom"></div>
+          </div>
+          
+          {/* Bottom-right cube */}
+          <div className="mini-cube pos-4">
+            <div className="face front"></div>
+            <div className="face back"></div>
+            <div className="face right"></div>
+            <div className="face left"></div>
+            <div className="face top"></div>
+            <div className="face bottom"></div>
+          </div>
+        </div>
+        
+        {/* Flat diamond shadow */}
+        <div className="shadow">
+          <div className="shadow-diamond"></div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const QOTD = () => {
     const { isDarkMode, toggleTheme } = useTheme();
