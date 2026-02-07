@@ -1,17 +1,17 @@
-const mongoose = require('mongoose');
+import { Schema, Types, model } from 'mongoose';
 
-const topicSchema = new mongoose.Schema({
+const topicSchema = new Schema({
     topicId: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(),
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),
     },
     title: {
         type: String,
         required: true,
     },
     notesId: {
-        type: mongoose.Schema.Types.ObjectId,
-        default: () => new mongoose.Types.ObjectId(),
+        type: Schema.Types.ObjectId,
+        default: () => new Types.ObjectId(),
     },
     notes: {
         type: String,
@@ -26,7 +26,7 @@ const topicSchema = new mongoose.Schema({
     },
 });
 
-const courseSchema = new mongoose.Schema({
+const courseSchema = new Schema({
     title: {
         type: String,
         required: true,
@@ -48,4 +48,4 @@ const courseSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Course', courseSchema);
+export default model('Course', courseSchema);

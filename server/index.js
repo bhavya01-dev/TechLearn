@@ -1,16 +1,17 @@
-const express = require('express');
-const dotenv = require('dotenv');
-const cors = require('cors');
-const connectDB = require('./config/db');
+import express, { json } from 'express';
+import { config } from 'dotenv';
+import cors from 'cors';
+import connectDB from './config/db';
 
 // Load env vars
-dotenv.config();
+config();
 
 // Connect to database
 connectDB();
 
 // Route files
-const courses = require('./routes/courseRoutes');
+import courses from './routes/courseRoutes';
+import qotdRoutes from './routes/qotdRoutes.js';
 
 const app = express();
 
@@ -35,7 +36,7 @@ app.use(cors({
 }));
 
 // Body parser
-app.use(express.json());
+app.use(json());
 
 // Simple logging middleware
 app.use((req, res, next) => {
@@ -45,10 +46,13 @@ app.use((req, res, next) => {
 
 // Mount routers
 app.use('/api/courses', courses);
+app.use('/api/v1/qotd', qotdRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
+
+
 
 const PORT = process.env.PORT || 5001;
 
