@@ -1,4 +1,5 @@
 import crypto from "crypto";
+import mongoose from "mongoose";
 import Question from "../models/Question.js";
 import User from "../models/User.js";
 import Submission from "../models/Submission.js";
@@ -7,7 +8,7 @@ import GuestUsage from "../models/GuestUsage.js";
 export const getTodayQuestion = async (req, res) => {
   try {
     const today = new Date().toISOString().split("T")[0];
-    const question = await Question.findOne({ activeDate: today });
+    const question = await Question.findOne({ activeDate: today }).lean();
 
     if (!question) {
       return res.status(404).json({ message: "No question assigned for today." });
@@ -49,8 +50,21 @@ export const getTodayQuestion = async (req, res) => {
       }
     }
 
+    const publicQuestion = {
+      _id: question._id,
+      title: question.title,
+      difficulty: question.difficulty,
+      description: question.description,
+      problemStatement: question.problemStatement,
+      sampleInput: question.sampleInput,
+      sampleOutput: question.sampleOutput,
+      starterCode: question.starterCode,
+      hints: Array.isArray(question.hints) ? question.hints : [],
+      activeDate: question.activeDate
+    };
+
     res.status(200).json({
-      ...question.toObject(),
+      ...publicQuestion,
       userProgress
     });
   } catch (error) {
@@ -96,6 +110,35 @@ const getGuestUsage = async (req, today, createIfMissing) => {
     }
   }
   return guest;
+};
+
+const toJudgeIoText = (value) => {
+  if (value === undefined || value === null) return "";
+  if (typeof value === "string") return value;
+  if (typeof value === "number" || typeof value === "boolean") return String(value);
+  return JSON.stringify(value);
+};
+
+const runJudge0 = async ({ code, languageId, stdin, expectedOutput }) => {
+  const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions?wait=true", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "X-RapidAPI-Key": process.env.JUDGE0_KEY
+    },
+    body: JSON.stringify({
+      source_code: code,
+      language_id: languageId,
+      stdin,
+      expected_output: expectedOutput
+    })
+  });
+
+  const judgeResult = await response.json().catch(() => null);
+  if (!response.ok || !judgeResult || !judgeResult.status) {
+    return null;
+  }
+  return judgeResult;
 };
 
 export const submitSolution = async (req, res) => {
@@ -161,29 +204,51 @@ export const submitSolution = async (req, res) => {
       return res.status(400).json({ message: "Oops! We don't support that language yet." });
     }
 
-    const question = await Question.findById(questionId);
-    if (!question) return res.status(404).json({ message: "Ouch! We couldn't find that question." });
+    if (!mongoose.Types.ObjectId.isValid(questionId)) {
+      return res.status(400).json({ message: "Invalid question id." });
+    }
 
-    const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions?wait=true", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "X-RapidAPI-Key": process.env.JUDGE0_KEY
-      },
-      body: JSON.stringify({
-        source_code: code,
-        language_id: languageId,
-        stdin: question.sampleInput,
-        expected_output: question.sampleOutput
-      })
-    });
+    const question = await Question.findOne({ _id: questionId, activeDate: today });
+    if (!question) {
+      return res.status(404).json({ message: "Today's question was not found for this submission." });
+    }
 
-    const judgeResult = await response.json();
+    const executionQueue = isSubmit && Array.isArray(question.testCases) && question.testCases.length > 0
+      ? question.testCases.map((testCase, index) => ({
+        caseNo: index + 1,
+        stdin: toJudgeIoText(testCase?.input),
+        expectedOutput: toJudgeIoText(testCase?.expected)
+      }))
+      : [{
+        caseNo: 1,
+        stdin: toJudgeIoText(question.sampleInput),
+        expectedOutput: toJudgeIoText(question.sampleOutput)
+      }];
 
-    if (!judgeResult || !judgeResult.status) {
+    let judgeResult = null;
+    for (const execution of executionQueue) {
+      const result = await runJudge0({
+        code,
+        languageId,
+        stdin: execution.stdin,
+        expectedOutput: execution.expectedOutput
+      });
+
+      if (!result || !result.status) {
+        return res.status(500).json({
+          message: "Our compiler is having a short nap. Please try again in a moment."
+        });
+      }
+
+      judgeResult = result;
+      if (result.status.description !== "Accepted") {
+        break;
+      }
+    }
+
+    if (!judgeResult) {
       return res.status(500).json({
-        message: "Our compiler is having a short nap. Please try again in a moment.",
-        judgeResult
+        message: "Our compiler is having a short nap. Please try again in a moment."
       });
     }
 
