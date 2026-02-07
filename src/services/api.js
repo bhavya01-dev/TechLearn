@@ -26,5 +26,11 @@ export const api = {
       console.error(`Post error for ${endpoint}:`, error);
       throw error;
     }
+  },
+  getTodayQuestion: async () => {
+    return await api.get('/v1/qotd');
+  },
+  submitSolution: async (questionId, code, language) => {
+    return await api.post('/v1/qotd/submit', { questionId, code, language });
   }
 };
