@@ -1,4 +1,5 @@
 import Question from '../models/Question.js';
+import User from '../models/User.js';
 
 // Fetch today's question
 export const getTodayQuestion = async (req, res) => {
@@ -26,9 +27,32 @@ const LANGUAGE_MAP = {
 
 export const submitSolution = async (req, res) => {
   try {
-    const { questionId, code, language } = req.body; // language will be "c", "python", or "java"
+    const { questionId, code, language } = req.body;
 
-    // 2. Look up the ID based on the incoming request
+    // 2. fetch logged-in user and checking if the user have the paid plan
+    const user = await User.findById(req.user.id);
+
+    const maxRuns = user.plan === "PAID" ? 4 : 2;
+
+    if (user.dailyRunCount >= maxRuns) {
+      return res.status(429).json({
+        message: "Daily run limit exceeded"
+      });
+    }
+
+    // 3. submission-per-day restriction
+    const today = new Date().toISOString().split('T')[0];
+    const lastDate = user.lastSubmissionDate
+      ? user.lastSubmissionDate.toISOString().split('T')[0]
+      : null;
+
+    if (lastDate === today) {
+      return res.status(400).json({
+        message: "You have already submitted today"
+      });
+    }
+
+    // 4. Look up the ID based on the incoming request
     const languageId = LANGUAGE_MAP[language.toLowerCase()];
 
     if (!languageId) {
@@ -38,7 +62,7 @@ export const submitSolution = async (req, res) => {
     const question = await Question.findById(questionId);
     if (!question) return res.status(404).json({ message: "Question not found" });
 
-    // 3. Dynamic Fetch call
+    // 5. Dynamic Fetch call
     const response = await fetch("https://judge0-ce.p.rapidapi.com/submissions?wait=true", {
       method: "POST",
       headers: {
@@ -47,13 +71,17 @@ export const submitSolution = async (req, res) => {
       },
       body: JSON.stringify({
         source_code: code,
-        language_id: languageId, // Dynamic ID based on user selection
+        language_id: languageId,
         stdin: question.sampleInput,
         expected_output: question.sampleOutput
       })
     });
 
     const judgeResult = await response.json();
+
+    // 6. update last submission date ONLY after successful evaluation
+    user.lastSubmissionDate = new Date();
+    await user.save();
 
     res.status(200).json({
       status: judgeResult.status.description,

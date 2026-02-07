@@ -48,4 +48,18 @@ const courseSchema = new Schema({
     },
 });
 
-export default model('Course', courseSchema);
+const Course = model('Course', courseSchema);
+
+export default Course;
+export async function find() {
+    return await Course.find();
+}
+export async function findById(id) {
+    return await Course.findById(id);
+}
+export async function findOne(query) {
+    return await Course.findOne(query);
+}
+export async function create(data) {
+    return await Course.create(data);
+}

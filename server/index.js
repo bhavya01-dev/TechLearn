@@ -1,7 +1,7 @@
 import express, { json } from 'express';
 import { config } from 'dotenv';
 import cors from 'cors';
-import connectDB from './config/db';
+import connectDB from './config/db.js';
 
 // Load env vars
 config();
@@ -10,8 +10,10 @@ config();
 connectDB();
 
 // Route files
-import courses from './routes/courseRoutes';
+import courses from './routes/courseRoutes.js';
 import qotdRoutes from './routes/qotdRoutes.js';
+import userRouter from './routes/userRoute.js';
+import leaderboardRoutes from './routes/leaderboardRoutes.js';
 
 const app = express();
 
@@ -47,6 +49,8 @@ app.use((req, res, next) => {
 // Mount routers
 app.use('/api/courses', courses);
 app.use('/api/v1/qotd', qotdRoutes);
+app.use("/api/v1/user", userRouter);
+app.use("/api/v1/leaderboard", leaderboardRoutes);
 
 app.get('/', (req, res) => {
     res.send('API is running...');

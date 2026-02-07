@@ -1,4 +1,5 @@
-import { find, findById, findOne, create } from '../models/Course';
+import { find, findById, findOne, create } from '../models/Course.js';
+import { Types } from 'mongoose';
 
 // @desc    Get all courses
 // @route   GET /api/v1/courses
@@ -11,8 +12,6 @@ export async function getCourses(req, res, next) {
         res.status(400).json({ success: false });
     }
 }
-
-import { Types } from 'mongoose';
 
 // @desc    Get single course
 // @route   GET /api/v1/courses/:id
